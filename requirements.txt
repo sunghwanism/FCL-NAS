@@ -1,13 +1,25 @@
-numpy>=1.21
+numpy>=1.23
 h5py~=3.7.0
 tqdm~=4.64.0
 scikit-learn~=1.1.1
 matplotlib~=3.5.2
 pandas~=1.4.3
 wandb==0.13.2
-# mpi4py~=3.1.4
-# fedml~=0.8.3a6
 pillow~=9.2.0
 seaborn~=0.11.2
 requests~=2.28.1
 scipy~=1.8.1
+multiprocess~=0.70.16
+GPUtil~=1.4.0
+chardet==5.2.0
+paho-mqtt~=1.6.1
+boto3~=1.24.32
+redis~=5.0.4
+sqlalchemy
+docker~=7.1.0
+httpx~=0.27.0
+fastapi~=0.111.0
+tritonclient[all]
+urllib3~=1.26.7
+wget~=3.2
+prettytable~=3.10.0
