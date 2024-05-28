@@ -30,18 +30,37 @@ train_args:
   ci: 0
   server_momentum: 0.9
 
+
+
+search_args:
+  init_channels: 16
+  layers: 8
+  auxiliary: false
+  momentum: 0.9
+  arch_learning_rate: 0.0003
+  arch_weight_decay: 0.001
+  learning_rate_min: 0.001
+  learning_rate: 0.025
+  lambda_train_regularizer: 1
+  lambda_valid_regularizer: 1
+  grad_clip: 5
+  tau_max: 10
+  tau_min: 1
+  report_freq: 1
+
+
 validation_args:
   frequency_of_the_test: 5
 
 device_args:
-  worker_num: 11
-  gpu_id: 3
+  worker_num: 1
+  gpu_id: 3 # if you use MPI backend, this parameter is ignored
   using_gpu: true
   gpu_mapping_file: config/gpu_mapping.yaml
   gpu_mapping_key: mapping_default
 
 comm_args:
-  backend: "sp" # MPI or sp
+  backend: "MPI" # MPI or sp
   is_mobile: 0
   stage: 'train'
 

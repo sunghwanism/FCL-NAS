@@ -52,6 +52,7 @@ def read_data(train_data_dir, test_data_dir, num_task, client_number):
     train_files = train_files[:client_number]
     
     for f in train_files: # select one user data file
+        
         user = f.split(".")[0]
         file_path = os.path.join(train_data_dir, user+'.json')
         temp_data = {}
@@ -59,7 +60,7 @@ def read_data(train_data_dir, test_data_dir, num_task, client_number):
             cdata = json.load(inf)
             # cdata {'task_id': {'x': [], 'y': []}, 'task_id': {'x': [], 'y': []} ...}
             
-        clients.extend(user)
+        clients.append(user)
         
         for task_id in range(num_task):
             temp_data[task_id] = cdata[f"task_{task_id}"]
@@ -76,9 +77,22 @@ def read_data(train_data_dir, test_data_dir, num_task, client_number):
             
         test_data[user] = temp_data
 
-    clients = sorted(cdata["users"])
+    # clients = sorted(cdata["users"])
 
     return clients, train_data, test_data
+
+
+def get_task_batch(args, total_task_data, batch_size):
+    num_task = args.num_task
+    batched_task_data = {}
+    
+    for task_id in range(num_task):
+        data = total_task_data[task_id]
+        
+        one_task_batch_data = batch_data(args, data, batch_size)
+        batched_task_data[task_id] = one_task_batch_data
+        
+    return batched_task_data
 
 
 def batch_data(args, data, batch_size):
@@ -104,6 +118,7 @@ def batch_data(args, data, batch_size):
         batched_y = data_y[i : i + batch_size]
         batched_x, batched_y = ml_engine_adapter.convert_numpy_to_ml_engine_data_format(args, batched_x, batched_y)
         batch_data.append((batched_x, batched_y))
+        
     return batch_data
 
 
@@ -118,37 +133,50 @@ def load_partition_data_CV_MNIST(args, client_number, batch_size):
     train_data_local_dict = dict()
     test_data_local_dict = dict()
     train_data_local_num_dict = dict()
-    train_data_global = list()
-    test_data_global = list()
+    train_data_global = dict()
+    test_data_global = dict()
     client_idx = 0
     logging.info("loading data...")
     train_data_num = {}
     test_data_num = {}
     
-    for u in users:
+    for user_idx, u in enumerate(users):
         user_train_data_num = {}
         user_test_data_num = {}
+        
         for task_id in train_data[u].keys():
             user_train_data_num[task_id] = len(train_data[u][task_id]["x"])
             user_test_data_num[task_id] = len(test_data[u][task_id]["x"])
-            train_data_num[task_id] += user_train_data_num[task_id]
-            test_data_num[task_id] += user_test_data_num[task_id]
+            if user_idx == 0:
+                train_data_num[task_id] = 0
+                test_data_num[task_id] = 0
+            else:
+                train_data_num[task_id] += user_train_data_num[task_id]
+                test_data_num[task_id] += user_test_data_num[task_id]
+            
         train_data_local_num_dict[client_idx] = user_train_data_num
 
         # transform to batches
-        train_batch = batch_data(args, train_data[u], batch_size)
-        test_batch = batch_data(args, test_data[u], batch_size)
+        train_batch = get_task_batch(args, train_data[u], batch_size)
+        test_batch = get_task_batch(args, test_data[u], batch_size)
 
         # index using client index
         train_data_local_dict[client_idx] = train_batch
         test_data_local_dict[client_idx] = test_batch
-        train_data_global += train_batch
-        test_data_global += test_batch
-        client_idx += 1
         
+        for task_id in range(args.num_task):
+            if user_idx == 0:
+                train_data_global[task_id] = train_batch[task_id]
+                test_data_global[task_id] = test_batch[task_id]
+            else:
+                train_data_global[task_id] += train_batch[task_id]
+                test_data_global[task_id] += test_batch[task_id]
+        
+        client_idx += 1
+    # train_data_global[task_id][batch_idx]
     logging.info("finished the loading data")
     client_num = client_idx
-    class_num = 10
+    class_num = 62
 
     return (
         client_num,

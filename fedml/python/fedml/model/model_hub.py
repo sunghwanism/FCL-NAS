@@ -71,6 +71,16 @@ def create(args, output_dim):
         elif args.stage == "train":
             genotype = genotypes.FedNAS_V1
             model = NetworkCIFAR(args.init_channels, output_dim, args.layers, args.auxiliary, genotype)
+            
+    elif model_name == "darts" and args.dataset == "cv_emnist":
+        if args.stage == "search":
+            criterion = nn.CrossEntropyLoss()
+            model = Network(args.init_channels, output_dim, args.layers, criterion)
+            
+        elif args.stage == "train":
+            genotype = genotypes.FedNAS_V1
+            model = NetworkCIFAR(args.init_channels, output_dim, args.layers, args.auxiliary, genotype)
+        
     elif model_name == "GAN" and args.dataset == "mnist":
         gen = Generator()
         disc = Discriminator()

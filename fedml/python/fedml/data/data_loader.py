@@ -450,6 +450,7 @@ def load_synthetic_data(args):
     elif dataset_name == "cv_emnist":
         logging.info("load_data. dataset_name = %s" % dataset_name)
         (
+            client_num,
             train_data_num,
             test_data_num,
             train_data_global,

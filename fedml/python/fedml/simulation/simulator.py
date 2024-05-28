@@ -39,22 +39,31 @@ class SimulatorSingleProcess:
 
         if args.federated_optimizer == FedML_FEDERATED_OPTIMIZER_FEDAVG:
             self.fl_trainer = FedAvgAPI(args, device, dataset, model)
+            
         elif args.federated_optimizer == FedML_FEDERATED_OPTIMIZER_FEDOPT:
             self.fl_trainer = FedOptAPI(args, device, dataset, model)
+            
         elif args.federated_optimizer == FedML_FEDERATED_OPTIMIZER_FEDNOVA:
             self.fl_trainer = FedNovaTrainer(dataset, model, device, args)
+            
         elif args.federated_optimizer == FedML_FEDERATED_OPTIMIZER_FEDDYN:
             self.fl_trainer = FedDynTrainer(dataset, model, device, args)
+            
         elif args.federated_optimizer == FedML_FEDERATED_OPTIMIZER_FEDPROX:
             self.fl_trainer = FedProxTrainer(dataset, model, device, args)
+            
         elif args.federated_optimizer == FedML_FEDERATED_OPTIMIZER_SCAFFOLD:
             self.fl_trainer = ScaffoldTrainer(dataset, model, device, args)
+            
         elif args.federated_optimizer == FedML_FEDERATED_OPTIMIZER_MIME:
             self.fl_trainer = MimeTrainer(dataset, model, device, args)
+            
         elif args.federated_optimizer == FedML_FEDERATED_OPTIMIZER_HIERACHICAL_FL:
             self.fl_trainer = HierarchicalTrainer(args, device, dataset, model)
+            
         elif args.federated_optimizer == FedML_FEDERATED_OPTIMIZER_TURBO_AGGREGATE:
             self.fl_trainer = TurboAggregateTrainer(dataset, model, device, args)
+            
         elif args.federated_optimizer == FedML_FEDERATED_OPTIMIZER_CLASSICAL_VFL:
             self.fl_trainer = VflFedAvgAPI(args, device, dataset, model)
 
