@@ -14,8 +14,8 @@ import numpy as np
 import torch
 
 import fedml
-from .computing.scheduler.env.collect_env import collect_env
-from .constants import (
+from fedml.computing.scheduler.env.collect_env import collect_env
+from fedml.constants import (
     FEDML_BACKEND_SERVICE_URL_DEV,
     FEDML_BACKEND_SERVICE_URL_LOCAL,
     FEDML_BACKEND_SERVICE_URL_RELEASE,
