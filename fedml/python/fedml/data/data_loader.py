@@ -23,6 +23,8 @@ from .shakespeare.data_loader import load_partition_data_shakespeare
 from .stackoverflow_nwp.data_loader import load_partition_data_federated_stackoverflow_nwp
 from ..core.mlops import MLOpsConfigs
 
+from .cv_mnist.data_loader import load_partition_data_CV_MNIST # New Dataset for FCL-NAS
+
 
 import boto3
 from botocore.config import Config
@@ -443,6 +445,27 @@ def load_synthetic_data(args):
             client_number=args.client_num_in_total,
             batch_size=args.batch_size,
         )
+        
+    # Add Data Loader for FCL-NAS
+    elif dataset_name == "CV_MNIST":
+        logging.info("load_data. dataset_name = %s" % dataset_name)
+        (
+            train_data_num,
+            test_data_num,
+            train_data_global,
+            test_data_global,
+            train_data_local_num_dict,
+            train_data_local_dict,
+            test_data_local_dict,
+            class_num,
+        ) = load_partition_data_CV_MNIST(
+            dataset=dataset_name,
+            data_dir=args.data_cache_dir,
+            partition_method=None,
+            partition_alpha=None,
+            client_number=args.client_num_in_total,
+            batch_size=args.batch_size,
+        )
 
     else:
         if dataset_name == "cifar10":
@@ -523,7 +546,8 @@ def load_synthetic_data(args):
         elif dataset_name == "cifar100":
             data_loader = load_partition_data_cifar100
         elif dataset_name == "cinic10":
-            data_loader = load_partition_data_cinic10
+            data_loader = load_partition_data_cinic10            
+            
         else:
             data_loader = load_partition_data_cifar10
         (
@@ -543,6 +567,12 @@ def load_synthetic_data(args):
             args.client_num_in_total,
             args.batch_size,
         )
+        
+        
+        
+        
+        
+        
 
     if centralized:
         train_data_local_num_dict = {
