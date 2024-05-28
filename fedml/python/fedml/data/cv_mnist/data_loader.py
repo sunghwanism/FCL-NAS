@@ -53,7 +53,7 @@ def read_data(train_data_dir, test_data_dir, num_task, client_number):
     
     for f in train_files: # select one user data file
         user = f.split(".")[0]
-        file_path = os.path.join(train_data_dir, user, 'json')
+        file_path = os.path.join(train_data_dir, user+'.json')
         temp_data = {}
         with open(file_path, "r") as inf:
             cdata = json.load(inf)
@@ -65,7 +65,7 @@ def read_data(train_data_dir, test_data_dir, num_task, client_number):
             temp_data[task_id] = cdata[task_id]
             
         train_data.update(temp_data)
-        test_file_path = os.path.join(test_data_dir, user, 'json')
+        test_file_path = os.path.join(test_data_dir, user+'.json')
     
         with open(test_file_path, "r") as inf:
             cdata = json.load(inf)
