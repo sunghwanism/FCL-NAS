@@ -59,7 +59,7 @@ def read_data(train_data_dir, test_data_dir, num_task, client_number):
             cdata = json.load(inf)
             # cdata {'task_id': {'x': [], 'y': []}, 'task_id': {'x': [], 'y': []} ...}
             
-        clients.extend(cdata[file_path.split(".")[0]])
+        clients.extend(user)
         
         for task_id in range(num_task):
             temp_data[task_id] = cdata[task_id]
