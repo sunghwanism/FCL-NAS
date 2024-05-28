@@ -1,9 +1,14 @@
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../fedml/python/')))
+
 import logging
 from copy import deepcopy
 
 import multiprocess as multiprocessing
 import os
 import random
+
 
 import numpy as np
 import torch
