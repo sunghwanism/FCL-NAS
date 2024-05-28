@@ -1,0 +1,8 @@
+protobuf<5.0dev,>=4.21.6
+grpcio
+grpcio-tools
+dill
+multiprocess
+nvidia-ml-py3
+matplotlib
+pandas
