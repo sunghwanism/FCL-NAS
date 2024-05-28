@@ -459,8 +459,7 @@ def load_synthetic_data(args):
             test_data_local_dict,
             class_num,
         ) = load_partition_data_CV_MNIST(
-            args=args,
-            data_dir=args.data_cache_dir,            
+            args=args,           
             client_number=args.client_num_in_total,
             batch_size=args.batch_size,
         )
