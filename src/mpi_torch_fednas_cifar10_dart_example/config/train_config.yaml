@@ -34,12 +34,13 @@ validation_args:
 
 device_args:
   worker_num: 11
+  gpu_id: 3
   using_gpu: true
   gpu_mapping_file: config/gpu_mapping.yaml
   gpu_mapping_key: mapping_default
 
 comm_args:
-  backend: "MPI"
+  backend: "sp" # MPI or sp
   is_mobile: 0
   stage: 'train'
 
