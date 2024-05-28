@@ -9,8 +9,14 @@
 # this is used for 10 clients and 1 server training within a single machine which has 4 GPUs
 mapping_default:
     # ChaoyangHe-GPU-RTX2080Tix4: [3, 3, 3, 2]
-    Baro-GPU-RTX4090x4: [3,3,3,2]
+    Baro-GPU-RTX4090x4: [3, 3, 3, 2]
 
+
+mapping_Baro3090:
+    Baro-GPU-RTX3090x4: [3, 3, 3, 2]
+
+mapping_A6000:
+    Baro-GPU-A6000x2: [0, 1]
 # # this is used for 4 clients and 1 server training within a single machine which has 4 GPUs
 # mapping_config1_5:
 #     host1: [2, 1, 1, 1]
