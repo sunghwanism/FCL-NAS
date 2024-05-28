@@ -1,6 +1,7 @@
 import logging
 
 import torch
+import numpy as np
 
 from .message_define import MyMessage
 from ....core.distributed.fedml_comm_manager import FedMLCommManager
@@ -15,6 +16,7 @@ class FedNASServerManager(FedMLCommManager):
         self.args.round_idx = 0
 
         self.aggregator = aggregator
+        self.task_idx_per_client = np.zeros(args.client_num_in_total)
 
     def run(self):
         global_model = self.aggregator.get_model()
@@ -42,6 +44,7 @@ class FedNASServerManager(FedMLCommManager):
         )
         message.add_params(MyMessage.MSG_ARG_KEY_MODEL_PARAMS, global_model_params)
         message.add_params(MyMessage.MSG_ARG_KEY_ARCH_PARAMS, global_arch_params)
+        message.add_params("Task_idx", 0) # For selecting task
         logging.info("MSG_TYPE_S2C_INIT_CONFIG. receiver: " + str(process_id))
         self.send_message(message)
 
@@ -82,6 +85,13 @@ class FedNASServerManager(FedMLCommManager):
             if self.args.round_idx == self.round_num:
                 self.finish()
                 return
+            
+            # Task Change for each client randomly
+            for client_idx in range(self.args.client_num_in_total):
+                prob = np.random.rand()
+                
+                if prob > 0.5: # Taks Change
+                    self.task_idx_per_client[client_idx] += 1
 
             for process_id in range(1, self.size):
                 self.__send_model_to_client_message(
@@ -94,6 +104,7 @@ class FedNASServerManager(FedMLCommManager):
         message = Message(MyMessage.MSG_TYPE_S2C_SYNC_MODEL_TO_CLIENT, 0, process_id)
         message.add_params(MyMessage.MSG_ARG_KEY_MODEL_PARAMS, global_model_params)
         message.add_params(MyMessage.MSG_ARG_KEY_ARCH_PARAMS, global_arch_params)
+        message.add_params("Task_idx", self.task_idx_per_client[process_id]) # For selecting task
         logging.info(
             "__send_model_to_client_message. MSG_TYPE_S2C_SYNC_MODEL_TO_CLIENT. receiver: "
             + str(process_id)

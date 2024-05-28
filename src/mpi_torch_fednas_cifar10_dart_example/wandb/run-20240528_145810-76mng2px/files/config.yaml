@@ -1,0 +1,170 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    cli_version: 0.13.2
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    python_version: 3.9.19
+    start_time: 1716922690.703034
+    t:
+      1:
+      - 1
+      - 41
+      - 55
+      2:
+      - 1
+      - 41
+      - 55
+      3:
+      - 16
+      - 23
+      4: 3.9.19
+      5: 0.13.2
+      8:
+      - 4
+      - 5
+backend:
+  desc: null
+  value: MPI
+batch_size:
+  desc: null
+  value: 10
+ci:
+  desc: null
+  value: 0
+client_id_list:
+  desc: null
+  value: '[]'
+client_num_in_total:
+  desc: null
+  value: 1000
+client_num_per_round:
+  desc: null
+  value: 4
+client_optimizer:
+  desc: null
+  value: sgd
+comm:
+  desc: null
+  value: <mpi4py.MPI.Intracomm object at 0x30d032770>
+comm_round:
+  desc: null
+  value: 50
+data_cache_dir:
+  desc: null
+  value: ../../data/preproc/
+dataset:
+  desc: null
+  value: cv_emnist
+enable_wandb:
+  desc: null
+  value: true
+epochs:
+  desc: null
+  value: 1
+federated_optimizer:
+  desc: null
+  value: FedNAS
+frequency_of_the_test:
+  desc: null
+  value: 5
+gpu_mapping_file:
+  desc: null
+  value: config/gpu_mapping.yaml
+gpu_mapping_key:
+  desc: null
+  value: mapping_default
+is_mobile:
+  desc: null
+  value: 0
+learning_rate:
+  desc: null
+  value: 0.03
+local_rank:
+  desc: null
+  value: 0
+lr:
+  desc: null
+  value: 0.001
+model:
+  desc: null
+  value: darts
+node_rank:
+  desc: null
+  value: 0
+partition_alpha:
+  desc: null
+  value: 0.5
+partition_method:
+  desc: null
+  value: hetero
+process_id:
+  desc: null
+  value: 0
+random_seed:
+  desc: null
+  value: 0
+rank:
+  desc: null
+  value: 0
+role:
+  desc: null
+  value: server
+run_device_id:
+  desc: null
+  value: '0'
+run_id:
+  desc: null
+  value: '0'
+server_lr:
+  desc: null
+  value: 0.001
+server_momentum:
+  desc: null
+  value: 0.9
+server_optimizer:
+  desc: null
+  value: sgd
+stage:
+  desc: null
+  value: train
+sys_perf_profiling:
+  desc: null
+  value: true
+training_type:
+  desc: null
+  value: simulation
+using_gpu:
+  desc: null
+  value: true
+using_mlops:
+  desc: null
+  value: false
+wandb_key:
+  desc: null
+  value: dac4b4e3de3694519c6dada0c32728d5fdd44d94
+wandb_name:
+  desc: null
+  value: FedNAS
+wandb_project:
+  desc: null
+  value: FCL-NAS
+wd:
+  desc: null
+  value: 0.001
+weight_decay:
+  desc: null
+  value: 0.001
+worker_num:
+  desc: null
+  value: 1
+yaml_config_file:
+  desc: null
+  value: config/train_config.yaml
+yaml_paths:
+  desc: null
+  value:
+  - config/train_config.yaml

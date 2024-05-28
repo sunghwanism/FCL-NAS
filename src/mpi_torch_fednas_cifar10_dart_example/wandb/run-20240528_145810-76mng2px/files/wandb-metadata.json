@@ -1,0 +1,25 @@
+{
+    "os": "macOS-14.4.1-arm64-arm-64bit",
+    "python": "3.9.19",
+    "heartbeatAt": "2024-05-28T18:58:11.077042",
+    "startedAt": "2024-05-28T18:58:10.682821",
+    "docker": null,
+    "cpu_count": 8,
+    "cuda": null,
+    "args": [
+        "--cf",
+        "config/train_config.yaml"
+    ],
+    "state": "running",
+    "program": "/Users/dalssung/Desktop/Project/FCL-NAS/src/mpi_torch_fednas_cifar10_dart_example/torch_fednas_cifar10_dart_step_by_step_example.py",
+    "codePath": "src/mpi_torch_fednas_cifar10_dart_example/torch_fednas_cifar10_dart_step_by_step_example.py",
+    "git": {
+        "remote": "git@github.com:sunghwanism/FCL-NAS.git",
+        "commit": "2df7b87c7ba580dd47fa4726c2e1885520c8858e"
+    },
+    "email": "97149338+sunghwanism@users.noreply.github.com",
+    "root": "/Users/dalssung/Desktop/Project/FCL-NAS",
+    "host": "MoonBookAir.local",
+    "username": "dalssung",
+    "executable": "/opt/homebrew/Caskroom/miniforge/base/envs/fcl_nas/bin/python"
+}

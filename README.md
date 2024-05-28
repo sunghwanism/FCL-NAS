@@ -15,9 +15,17 @@ conda install mpi4py
 pip install -r requirements.txt
 ```
 
-For ```Mac with Slicon Chip``` or ```other OS``` 
+For ```Mac with Slicon Chip``` or ```other OS``` (CPU Version) 
 ```sh
 conda install pytorch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 cpuonly -c pytorch
-brew install mpi4py
-pip install -r requirements.txt
+brew install mpi4py (MAC)
+conda install mpi4py (Other OS)
+pip install -r requirements.txts
 ```
+
+## Dataset
+
+### 1. COV_EMNIST (Covariate EMNIST)
+The data consists of 10 task per clients (0~9)
+- X data: data[f'task_{idx}']['x']
+- y data: data[f'task_{idx}']['y']

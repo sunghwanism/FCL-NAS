@@ -1,6 +1,6 @@
 import os
 import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../fedml/python/')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../fedml/python/')))
 
 import fedml
 from fedml import FedMLRunner

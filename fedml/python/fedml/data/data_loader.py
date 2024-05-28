@@ -447,7 +447,7 @@ def load_synthetic_data(args):
         )
         
     # Add Data Loader for FCL-NAS
-    elif dataset_name == "CV_MNIST":
+    elif dataset_name == "cv_emnist":
         logging.info("load_data. dataset_name = %s" % dataset_name)
         (
             train_data_num,
@@ -459,10 +459,8 @@ def load_synthetic_data(args):
             test_data_local_dict,
             class_num,
         ) = load_partition_data_CV_MNIST(
-            dataset=dataset_name,
-            data_dir=args.data_cache_dir,
-            partition_method=None,
-            partition_alpha=None,
+            args=args,
+            data_dir=args.data_cache_dir,            
             client_number=args.client_num_in_total,
             batch_size=args.batch_size,
         )

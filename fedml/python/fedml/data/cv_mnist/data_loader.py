@@ -13,23 +13,23 @@ from ...constants import FEDML_DATA_MNIST_URL
 import logging
 
 
-def download_mnist(data_cache_dir):
-    if not os.path.exists(data_cache_dir):
-        os.makedirs(data_cache_dir, exist_ok=True)
+# def download_mnist(data_cache_dir):
+#     if not os.path.exists(data_cache_dir):
+#         os.makedirs(data_cache_dir, exist_ok=True)
 
-    file_path = os.path.join(data_cache_dir, "MNIST.zip")
-    logging.info(file_path)
+#     file_path = os.path.join(data_cache_dir, "MNIST.zip")
+#     logging.info(file_path)
 
-    # Download the file (if we haven't already)
-    if not os.path.exists(file_path):
-        wget.download(FEDML_DATA_MNIST_URL, out=file_path)
+#     # Download the file (if we haven't already)
+#     if not os.path.exists(file_path):
+#         wget.download(FEDML_DATA_MNIST_URL, out=file_path)
 
-    file_extracted_path = os.path.join(data_cache_dir, "MNIST")
-    if not os.path.exists(file_extracted_path):
-        with zipfile.ZipFile(file_path, "r") as zip_ref:
-            zip_ref.extractall(data_cache_dir)
+#     file_extracted_path = os.path.join(data_cache_dir, "MNIST")
+#     if not os.path.exists(file_extracted_path):
+#         with zipfile.ZipFile(file_path, "r") as zip_ref:
+#             zip_ref.extractall(data_cache_dir)
 
-def read_data(train_data_dir, test_data_dir):
+def read_data(train_data_dir, test_data_dir, num_task, client_number):
     """parses data in given train and test data directories
 
     assumes:
@@ -38,38 +38,47 @@ def read_data(train_data_dir, test_data_dir):
     - the set of train set users is the same as the set of test set users
 
     Return:
-        clients: list of non-unique client ids
+        clients: list of non-unique client` ids
         groups: list of group ids; empty list if none found
         train_data: dictionary of train data
         test_data: dictionary of test data
     """
     clients = []
-    groups = []
     train_data = {}
     test_data = {}
 
     train_files = os.listdir(train_data_dir)
     train_files = [f for f in train_files if f.endswith(".json")]
-    for f in train_files:
-        file_path = os.path.join(train_data_dir, f)
+    train_files = train_files[:client_number]
+    
+    for f in train_files: # select one user data file
+        user = f.split(".")[0]
+        file_path = os.path.join(train_data_dir, user, 'json')
+        temp_data = {}
         with open(file_path, "r") as inf:
             cdata = json.load(inf)
-        clients.extend(cdata["users"])
-        if "hierarchies" in cdata:
-            groups.extend(cdata["hierarchies"])
-        train_data.update(cdata["user_data"])
-
-    test_files = os.listdir(test_data_dir)
-    test_files = [f for f in test_files if f.endswith(".json")]
-    for f in test_files:
-        file_path = os.path.join(test_data_dir, f)
-        with open(file_path, "r") as inf:
+            # cdata {'task_id': {'x': [], 'y': []}, 'task_id': {'x': [], 'y': []} ...}
+            
+        clients.extend(cdata[file_path.split(".")[0]])
+        
+        for task_id in range(num_task):
+            temp_data[task_id] = cdata[task_id]
+            
+        train_data.update(temp_data)
+        test_file_path = os.path.join(test_data_dir, user, 'json')
+    
+        with open(test_file_path, "r") as inf:
             cdata = json.load(inf)
-        test_data.update(cdata["user_data"])
+        temp_data = {}
+        
+        for task_id in range(num_task):
+            temp_data[task_id] = cdata[task_id]
+            
+        test_data.update(temp_data)
 
     clients = sorted(cdata["users"])
 
-    return clients, groups, train_data, test_data
+    return clients, train_data, test_data
 
 
 def batch_data(args, data, batch_size):
@@ -98,20 +107,12 @@ def batch_data(args, data, batch_size):
     return batch_data
 
 
-def load_partition_data_mnist_by_device_id(batch_size, device_id, train_path="MNIST_mobile", test_path="MNIST_mobile"):
-    train_path += os.path.join("/", device_id, "train")
-    test_path += os.path.join("/", device_id, "test")
-    return load_partition_data_CV_MNIST(batch_size, train_path, test_path)
+def load_partition_data_CV_MNIST(args, client_number, batch_size):
+    train_path = os.path.join(args.data_dir, args.dataset, "train")
+    test_path = os.path.join(args.data_dir, args.dataset, "test")
+    users, train_data, test_data = read_data(train_path, test_path,
+                                             args.num_task, client_number=client_number)
 
-
-def load_partition_data_CV_MNIST(
-    args, batch_size, train_path=os.path.join(os.getcwd(), "CV_MNIST", "train"),
-        test_path=os.path.join(os.getcwd(), "MNIST", "test")
-):
-    users, groups, train_data, test_data = read_data(train_path, test_path)
-
-    if len(groups) == 0:
-        groups = [None for _ in users]
     train_data_num = 0
     test_data_num = 0
     train_data_local_dict = dict()
@@ -121,11 +122,17 @@ def load_partition_data_CV_MNIST(
     test_data_global = list()
     client_idx = 0
     logging.info("loading data...")
-    for u, g in zip(users, groups):
-        user_train_data_num = len(train_data[u]["x"])
-        user_test_data_num = len(test_data[u]["x"])
-        train_data_num += user_train_data_num
-        test_data_num += user_test_data_num
+    train_data_num = {}
+    test_data_num = {}
+    
+    for u in users:
+        user_train_data_num = {}
+        user_test_data_num = {}
+        for task_id in train_data[u].keys():
+            user_train_data_num[task_id] = len(train_data[u][task_id]["x"])
+            user_test_data_num[task_id] = len(test_data[u][task_id]["x"])
+            train_data_num[task_id] += user_train_data_num[task_id]
+            test_data_num[task_id] += user_test_data_num[task_id]
         train_data_local_num_dict[client_idx] = user_train_data_num
 
         # transform to batches
@@ -138,6 +145,7 @@ def load_partition_data_CV_MNIST(
         train_data_global += train_batch
         test_data_global += test_batch
         client_idx += 1
+        
     logging.info("finished the loading data")
     client_num = client_idx
     class_num = 10

@@ -3,8 +3,8 @@ common_args:
   random_seed: 0
 
 data_args:
-  dataset: "cifar10"
-  data_cache_dir: ~/.cache/fedml_data
+  dataset: "cv_emnist"
+  data_cache_dir: ../../data/preproc/
   partition_method: "hetero"
   partition_alpha: 0.5
 
@@ -14,8 +14,8 @@ model_args:
 train_args:
   federated_optimizer: "FedNAS"
   client_id_list: "[]"
-  client_num_in_total: 1000
-  client_num_per_round: 4
+  client_num_in_total: 10
+  client_num_per_round: 5
   comm_round: 50
   epochs: 1
   batch_size: 10
@@ -46,8 +46,8 @@ comm_args:
 
 tracking_args:
    # When running on MLOps platform(open.fedml.ai), the default log path is at ~/.fedml/fedml-client/fedml/logs/ and ~/.fedml/fedml-server/fedml/logs/
-  enable_wandb: false
-  wandb_key: ee0b5f53d949c84cee7decbe7a629e63fb2f8408
-  wandb_project: fedml
-  wandb_name: fedml_torch_fedavg_mnist_lr
+  enable_wandb: true
+  wandb_key: dac4b4e3de3694519c6dada0c32728d5fdd44d94
+  wandb_project: FCL-NAS
+  wandb_name: FedNAS
   using_mlops: false
