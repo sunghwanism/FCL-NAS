@@ -62,9 +62,9 @@ def read_data(train_data_dir, test_data_dir, num_task, client_number):
         clients.extend(user)
         
         for task_id in range(num_task):
-            temp_data[task_id] = cdata[task_id]
+            temp_data[task_id] = cdata[f"task_{task_id}"]
             
-        train_data.update(temp_data)
+        train_data[user] = temp_data
         test_file_path = os.path.join(test_data_dir, user+'.json')
     
         with open(test_file_path, "r") as inf:
@@ -72,9 +72,9 @@ def read_data(train_data_dir, test_data_dir, num_task, client_number):
         temp_data = {}
         
         for task_id in range(num_task):
-            temp_data[task_id] = cdata[task_id]
+            temp_data[task_id] = cdata[f"task_{task_id}"]
             
-        test_data.update(temp_data)
+        test_data[user] = temp_data
 
     clients = sorted(cdata["users"])
 
