@@ -14,6 +14,13 @@ cd data/leaf/data/femnist
 ./preprocess.sh -s niid --sf 1.0 -k 0 -t sample --tf 0.9 --smplseed 42 --spltseed 42
 ```
 
+Split the dataset for generating covariate dataset
+MUST change the name of ```dataset``` and ```num_task``` before running split.py file
+Start from github root dir
+```sh
+python ./data/preproc/split.py
+```
+
 
 ## 2. CelebA
 To-do
