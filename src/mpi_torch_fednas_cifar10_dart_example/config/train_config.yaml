@@ -7,6 +7,7 @@ data_args:
   data_cache_dir: ../../data/preproc/
   partition_method: "hetero"
   partition_alpha: 0.5
+  num_task: 5 # ~10
 
 model_args:
   model: "darts"

@@ -108,8 +108,8 @@ def batch_data(args, data, batch_size):
 
 
 def load_partition_data_CV_MNIST(args, client_number, batch_size):
-    train_path = os.path.join(args.data_dir, args.dataset, "train")
-    test_path = os.path.join(args.data_dir, args.dataset, "test")
+    train_path = os.path.join(args.data_cache_dir, args.dataset, "train")
+    test_path = os.path.join(args.data_cache_dir, args.dataset, "test")
     users, train_data, test_data = read_data(train_path, test_path,
                                              args.num_task, client_number=client_number)
 
