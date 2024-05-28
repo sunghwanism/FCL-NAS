@@ -11,7 +11,7 @@ Install Pytorch
 For ```Linux``` with ```CUDA```
 ```sh
 pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu113
-pip install mpi4py
+conda install mpi4py
 pip install -r requirements.txt
 ```
 
