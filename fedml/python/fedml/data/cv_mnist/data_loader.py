@@ -88,7 +88,6 @@ def get_task_batch(args, total_task_data, batch_size):
     
     for task_id in range(num_task):
         data = total_task_data[task_id]
-        
         one_task_batch_data = batch_data(args, data, batch_size)
         batched_task_data[task_id] = one_task_batch_data
         
@@ -101,7 +100,7 @@ def batch_data(args, data, batch_size):
     data is a dict := {'x': [numpy array], 'y': [numpy array]} (on one client)
     returns x, y, which are both numpy array of length: batch_size
     """
-    data_x = data["x"]
+    data_x = data["x"].reshape(-1, 28, 28)
     data_y = data["y"]
 
     # randomly shuffle data

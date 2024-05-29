@@ -34,8 +34,8 @@ class FedNASClientManager(FedMLCommManager):
         process_id = msg_params.get(MyMessage.MSG_ARG_KEY_SENDER)
         
         # For knowing the current task index
-        self.task_idx = msg_params.get(MyMessage.MSG_TASK_KEY)[process_id]
-        logging.info("---------- Current Task Index: [" + str(self.task_idx),"] ----------")
+        self.task_idx = msg_params.get(MyMessage.MSG_TASK_KEY)
+        logging.info(f"---------- Current Task Index [{self.task_idx}]] ----------")
         self.trainer.task_idx = self.task_idx
         self.trainer.update_model(global_model_params)
         if self.args.stage == "search":

@@ -90,6 +90,8 @@ class FedNASServerManager(FedMLCommManager):
             
             # Task Change for each client randomly
             for client_idx in range(self.args.client_num_in_total):
+                if self.task_idx_per_client[client_idx] == self.args.num_task - 1:
+                    continue
                 prob = np.random.rand()
                 
                 if prob > self.args.next_task_prob: # Taks Change
