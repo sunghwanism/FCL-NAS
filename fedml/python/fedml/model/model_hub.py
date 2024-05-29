@@ -2,8 +2,8 @@ import logging
 import torch.nn as nn
 from fedml.model.cv.cnn import CNN_DropOut, CNN_WEB
 from fedml.model.cv.darts import genotypes
-from fedml.model.cv.darts.model import NetworkCIFAR
-from fedml.model.cv.darts.model_search import Network
+from fedml.model.cv.darts.model import NetworkCIFAR, NetworkCVMNIST
+from fedml.model.cv.darts.model_search import Network, NetworkCV
 from fedml.model.cv.efficientnet import EfficientNet
 from fedml.model.cv.mnist_gan import Generator, Discriminator
 from fedml.model.cv.mobilenet import mobilenet
@@ -75,11 +75,11 @@ def create(args, output_dim):
     elif model_name == "darts" and args.dataset == "cv_emnist":
         if args.stage == "search":
             criterion = nn.CrossEntropyLoss()
-            model = Network(args.init_channels, output_dim, args.layers, criterion)
+            model = NetworkCV(args.init_channels, output_dim, args.layers, criterion)
             
         elif args.stage == "train":
             genotype = genotypes.FedNAS_V1
-            model = NetworkCIFAR(args.init_channels, output_dim, args.layers, args.auxiliary, genotype)
+            model = NetworkCVMNIST(args.init_channels, output_dim, args.layers, args.auxiliary, genotype)
         
     elif model_name == "GAN" and args.dataset == "mnist":
         gen = Generator()

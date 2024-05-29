@@ -375,3 +375,176 @@ class Network(nn.Module):
         # This need to be further checked with cuda stuff
         del model
         return size
+
+
+
+
+class NetworkCV(nn.Module):
+    def __init__(
+        self,
+        C,
+        num_classes,
+        layers,
+        criterion,
+        steps=4,
+        multiplier=4,
+        stem_multiplier=3,
+    ):
+        super(NetworkCV, self).__init__()
+        print(NetworkCV)
+        self._C = C
+        self._num_classes = num_classes
+        self._layers = layers
+        self._criterion = criterion
+        self._steps = steps
+        self._multiplier = multiplier
+        self._stem_multiplier = stem_multiplier
+
+
+        C_curr = stem_multiplier * C  # 3*16
+        self.stem = nn.Sequential(
+            nn.Conv2d(1, C_curr, 3, padding=1, bias=False), nn.BatchNorm2d(C_curr)
+        )
+
+        C_prev_prev, C_prev, C_curr = C_curr, C_curr, C
+        self.cells = nn.ModuleList()
+        reduction_prev = False
+
+        # for layers = 8, when layer_i = 2, 5, the cell is reduction cell.
+        for i in range(layers):
+            if i in [layers // 3, 2 * layers // 3]:
+                C_curr *= 2
+                reduction = True
+            else:
+                reduction = False
+            cell = Cell(
+                steps,
+                multiplier,
+                C_prev_prev,
+                C_prev,
+                C_curr,
+                reduction,
+                reduction_prev,
+            )
+            reduction_prev = reduction
+            self.cells += [cell]
+            C_prev_prev, C_prev = C_prev, multiplier * C_curr
+
+        self.global_pooling = nn.AdaptiveAvgPool2d(1)
+        self.classifier = nn.Linear(C_prev, num_classes)
+
+        self._initialize_alphas()
+
+    def new(self):
+        model_new = Network(
+            self._C, self._num_classes, self._layers, self._criterion, self.device
+        ).to(self.device)
+        for x, y in zip(model_new.arch_parameters(), self.arch_parameters()):
+            x.data.copy_(y.data)
+        return model_new
+
+    def forward(self, input):
+        s0 = s1 = self.stem(input)
+        for i, cell in enumerate(self.cells):
+            if cell.reduction:
+                weights = F.softmax(self.alphas_reduce, dim=-1)
+            else:
+                weights = F.softmax(self.alphas_normal, dim=-1)
+            s0, s1 = s1, cell(s0, s1, weights)
+        out = self.global_pooling(s1)
+        logits = self.classifier(out.view(out.size(0), -1))
+        return logits
+
+    def _initialize_alphas(self):
+        k = sum(1 for i in range(self._steps) for n in range(2 + i))
+        num_ops = len(PRIMITIVES)
+
+        self.alphas_normal = nn.Parameter(1e-3 * torch.randn(k, num_ops))
+        self.alphas_reduce = nn.Parameter(1e-3 * torch.randn(k, num_ops))
+        self._arch_parameters = [
+            self.alphas_normal,
+            self.alphas_reduce,
+        ]
+
+    def new_arch_parameters(self):
+        k = sum(1 for i in range(self._steps) for n in range(2 + i))
+        num_ops = len(PRIMITIVES)
+
+        alphas_normal = nn.Parameter(1e-3 * torch.randn(k, num_ops)).to(self.device)
+        alphas_reduce = nn.Parameter(1e-3 * torch.randn(k, num_ops)).to(self.device)
+        _arch_parameters = [
+            alphas_normal,
+            alphas_reduce,
+        ]
+        return _arch_parameters
+
+    def arch_parameters(self):
+        return self._arch_parameters
+
+    def genotype(self):
+        def _isCNNStructure(k_best):
+            return k_best >= 4
+
+        def _parse(weights):
+            gene = []
+            n = 2
+            start = 0
+            cnn_structure_count = 0
+            for i in range(self._steps):
+                end = start + n
+                W = weights[start:end].copy()
+                edges = sorted(
+                    range(i + 2),
+                    key=lambda x: -max(
+                        W[x][k]
+                        for k in range(len(W[x]))
+                        if k != PRIMITIVES.index("none")
+                    ),
+                )[:2]
+                for j in edges:
+                    k_best = None
+                    for k in range(len(W[j])):
+                        if k != PRIMITIVES.index("none"):
+                            if k_best is None or W[j][k] > W[j][k_best]:
+                                k_best = k
+
+                    if _isCNNStructure(k_best):
+                        cnn_structure_count += 1
+                    gene.append((PRIMITIVES[k_best], j))
+                start = end
+                n += 1
+            return gene, cnn_structure_count
+
+        with torch.no_grad():
+            gene_normal, cnn_structure_count_normal = _parse(
+                F.softmax(self.alphas_normal, dim=-1).data.cpu().numpy()
+            )
+            gene_reduce, cnn_structure_count_reduce = _parse(
+                F.softmax(self.alphas_reduce, dim=-1).data.cpu().numpy()
+            )
+
+            concat = range(2 + self._steps - self._multiplier, self._steps + 2)
+            genotype = Genotype(
+                normal=gene_normal,
+                normal_concat=concat,
+                reduce=gene_reduce,
+                reduce_concat=concat,
+            )
+        return genotype, cnn_structure_count_normal, cnn_structure_count_reduce
+
+    def get_current_model_size(self):
+        model = ModelForModelSizeMeasure(
+            self._C,
+            self._num_classes,
+            self._layers,
+            self._criterion,
+            self.alphas_normal,
+            self.alphas_reduce,
+            self._steps,
+            self._multiplier,
+            self._stem_multiplier,
+        )
+        size = count_parameters_in_MB(model)
+        # This need to be further checked with cuda stuff
+        del model
+        return size
