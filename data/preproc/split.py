@@ -17,13 +17,13 @@ def split_data(DATABATH, SAVEPATH, dataset, num_task=10):
     
     train_data_list = os.listdir(train_data_path)
     
-    if not os.path.exists(os.path.join(SAVEPATH, dataset,'train')):
-        os.makedirs(os.path.join(SAVEPATH, dataset,'train'))
-    if not os.path.exists(os.path.join(SAVEPATH, dataset,'test')):
-        os.makedirs(os.path.join(SAVEPATH, dataset,'test'))
+    if not os.path.exists(os.path.join(SAVEPATH,'train')):
+        os.makedirs(os.path.join(SAVEPATH,'train'))
+    if not os.path.exists(os.path.join(SAVEPATH,'test')):
+        os.makedirs(os.path.join(SAVEPATH,'test'))
     
-    save_train_path = os.path.join(SAVEPATH, dataset, "train")
-    save_test_path = os.path.join(SAVEPATH, dataset, "test")
+    save_train_path = os.path.join(SAVEPATH, "train")
+    save_test_path = os.path.join(SAVEPATH, "test")
     
     # filename: all_data_1_keep_0_train_9.json
     for i in range(len(train_data_list)):
@@ -60,7 +60,7 @@ def split_data(DATABATH, SAVEPATH, dataset, num_task=10):
             
             with open(os.path.join(save_test_path, f'{first_user}.json'), 'w') as f:
                 json.dump(temp_test, f)
-                            
+
             print("------- Finish generating data for user {} -------".format(first_user))
 
 
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     DATABATH = "./data/leaf/data/femnist/data/"
     dataset = 'femnist'
 
-    SAVEPATH = f'./data/preproc/'
+    SAVEPATH = f'./data/preproc/cv_emnist'
     num_task = 10
     
     split_data(DATABATH, SAVEPATH, dataset, num_task)
