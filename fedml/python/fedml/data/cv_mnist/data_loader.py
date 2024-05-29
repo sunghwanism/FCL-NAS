@@ -100,8 +100,8 @@ def batch_data(args, data, batch_size):
     data is a dict := {'x': [numpy array], 'y': [numpy array]} (on one client)
     returns x, y, which are both numpy array of length: batch_size
     """
-    data_x = data["x"].reshape(-1, 28, 28)
-    data_y = data["y"]
+    data_x = np.array(data["x"]).reshape(-1, 1, 28, 28)
+    data_y = np.array(data["y"])
 
     # randomly shuffle data
     np.random.seed(100)
