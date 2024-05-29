@@ -18,3 +18,5 @@ class MyMessage(object):
     MSG_ARG_KEY_LOCAL_TRAINING_LOSS = "local_training_loss"
     MSG_ARG_KEY_LOCAL_TEST_ACC = "local_test_acc"
     MSG_ARG_KEY_LOCAL_TEST_LOSS = "local_test_loss"
+    
+    MSG_TASK_KEY = 'task'

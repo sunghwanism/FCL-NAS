@@ -13,6 +13,7 @@ class FedNASClientManager(FedMLCommManager):
         self.trainer = trainer
         self.num_rounds = args.comm_round
         self.args.round_idx = 0
+        self.task_idx = 0
 
     def run(self):
         super().run()
@@ -30,6 +31,12 @@ class FedNASClientManager(FedMLCommManager):
         logging.info("__handle_msg_client_receive_config")
         global_model_params = msg_params.get(MyMessage.MSG_ARG_KEY_MODEL_PARAMS)
         arch_params = msg_params.get(MyMessage.MSG_ARG_KEY_ARCH_PARAMS)
+        process_id = msg_params.get(MyMessage.MSG_ARG_KEY_SENDER)
+        
+        # For knowing the current task index
+        self.task_idx = msg_params.get(MyMessage.MSG_TASK_KEY)[process_id]
+        logging.info("---------- Current Task Index: [" + str(self.task_idx),"] ----------")
+        self.trainer.task_idx = self.task_idx
         self.trainer.update_model(global_model_params)
         if self.args.stage == "search":
             self.trainer.update_arch(arch_params)

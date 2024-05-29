@@ -31,6 +31,7 @@ class FedNASTrainer(object):
         self.train_local = train_data_local_dict[client_index] # To-Be Changed
         self.local_sample_number = train_data_local_num # To-Be Changed
         self.test_local = test_data_local_dict[client_index] # To-Be Changed
+        self.task_idx = 0
 
     def update_model(self, weights):
         logging.info("update_model. client_index = %d" % self.client_index)
@@ -69,8 +70,8 @@ class FedNASTrainer(object):
         for epoch in range(self.args.epochs):
             # training
             train_acc, train_obj, train_loss = self.local_search(
-                self.train_local,
-                self.test_local,
+                self.train_local[self.task_idx],
+                self.test_local[self.task_idx],
                 self.model,
                 architect,
                 self.criterion,
@@ -189,7 +190,7 @@ class FedNASTrainer(object):
         for epoch in range(self.args.epochs):
             # training
             train_acc, train_obj, train_loss = self.local_train(
-                self.train_local, self.test_local, self.model, self.criterion, optimizer
+                self.train_local[self.task_idx], self.test_local[self.task_idx], self.model, self.criterion, optimizer
             )
             logging.info(
                 "client_idx = %d, local train_acc %f" % (self.client_index, train_acc)
@@ -287,7 +288,7 @@ class FedNASTrainer(object):
         test_correct = 0.0
         test_loss = 0.0
         test_sample_number = 0.0
-        test_data = self.train_local
+        test_data = self.train_local[self.task_idx]
         with torch.no_grad():
             for batch_idx, (x, target) in enumerate(test_data):
                 x = x.to(self.device)

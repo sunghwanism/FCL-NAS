@@ -8,6 +8,7 @@ data_args:
   partition_method: "hetero"
   partition_alpha: 0.5
   num_task: 5 # ~10
+  next_task_prob: 0 # if 0, the task is changed in  ~> FedNASServerManager.py
 
 model_args:
   model: "darts"
