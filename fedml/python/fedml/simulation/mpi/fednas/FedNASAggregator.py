@@ -92,14 +92,14 @@ class FedNASAggregator(object):
         all_train_num = 0
         for i in range(0, len(model_list)):
             local_sample_num, _ = model_list[i]
-            all_train_num += local_sample_num
+            all_train_num += local_sample_num[self.task_idx]
         
         for k in averaged_params.keys():
             for i in range(0, len(model_list)):
                 local_sample_number, local_model_params = model_list[i]
                 
                 # w = local_sample_number / self.all_train_data_num # original
-                w = local_sample_number / all_train_num # modified
+                w = local_sample_number[self.task_idx] / all_train_num # modified
                 
                 if i == 0:
                     averaged_params[k] = local_model_params[k] * w
@@ -131,7 +131,7 @@ class FedNASAggregator(object):
             for i in range(0, len(alpha_list)):
                 local_sample_number, local_alpha = alpha_list[i]
                 # w = local_sample_number / self.all_train_data_num # original
-                w = local_sample_number / all_train_num # modified
+                w = local_sample_number[self.task_idx] / all_train_num # modified
                 if i == 0:
                     alpha = local_alpha[index] * w
                 else:
