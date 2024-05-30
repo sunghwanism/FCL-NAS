@@ -48,7 +48,8 @@ def FedML_FedNAS_distributed(
             worker_number,
             model,
             train_data_num,
-            test_data_num,
+            train_data_local_num_dict,
+            # test_data_num,
             train_data_local_dict,
             test_data_local_dict,
         )

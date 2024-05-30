@@ -16,11 +16,11 @@ model_args:
 train_args:
   federated_optimizer: "FedNAS"
   client_id_list: "[]"
-  client_num_in_total: 10
-  client_num_per_round: 10
+  client_num_in_total: 3
+  client_num_per_round: 3
   comm_round: 100
   epochs: 10
-  batch_size: 64
+  batch_size: 16
   client_optimizer: sgd
   learning_rate: 0.03
   weight_decay: 0.001
@@ -47,15 +47,15 @@ search_args:
   grad_clip: 5
   tau_max: 10
   tau_min: 1
-  report_freq: 10
+  report_freq: 50
 
 
 validation_args:
   frequency_of_the_test: 5
 
 device_args:
-  worker_num: 10
-  gpu_id: 3 # if you use MPI backend, this parameter is ignored
+  worker_num: 4
+  # gpu_id: 3 # if you use MPI backend, this parameter is ignored
   using_gpu: true
   gpu_mapping_file: config/gpu_mapping.yaml
   gpu_mapping_key: mapping_default
@@ -68,7 +68,7 @@ comm_args:
 
 tracking_args:
    # When running on MLOps platform(open.fedml.ai), the default log path is at ~/.fedml/fedml-client/fedml/logs/ and ~/.fedml/fedml-server/fedml/logs/
-  enable_wandb: true
+  enable_wandb: false
   wandb_key: dac4b4e3de3694519c6dada0c32728d5fdd44d94 # msh2044 key
   wandb_project: FCL-NAS
   wandb_name: FedNAS
