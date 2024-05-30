@@ -207,8 +207,8 @@ class FedNASAggregator(object):
             criterion = nn.CrossEntropyLoss().to(self.device)
             with torch.no_grad():
                 for batch_idx, (x, target) in enumerate(test_data):
-                    x = x.to(self.device)
-                    target = target.to(self.device)
+                    x = x[self.task_idx].to(self.device)
+                    target = target[self.task_idx].to(self.device)
 
                     pred = self.model(x)
                     if self.args.stage == "train":
