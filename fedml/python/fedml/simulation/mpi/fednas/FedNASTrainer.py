@@ -218,7 +218,7 @@ class FedNASTrainer(object):
         top5 = utils.AvgrageMeter()
 
         
-        for step, (input, target) in enumerate(train_queue):
+        for step, (input, target) in enumerate(train_queue): # train_queue is batched data
             # logging.info("epoch %d, step %d START" % (epoch, step))
             model.train()
             n = input.size(0)

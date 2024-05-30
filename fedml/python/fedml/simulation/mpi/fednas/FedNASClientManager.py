@@ -76,7 +76,7 @@ class FedNASClientManager(FedMLCommManager):
                 train_loss,
             ) = self.trainer.search()
         else:
-            weights, local_sample_num, train_acc, train_loss = self.trainer.train()
+            weights, local_sample_num, train_acc, train_loss = self.trainer.train() # local_sample_num is the number of samples in the local dataset of the task
             alphas = []
         train_finished_time = time.time()
         # for one epoch, the local searching time cost is: 75s (based on RTX2080Ti)

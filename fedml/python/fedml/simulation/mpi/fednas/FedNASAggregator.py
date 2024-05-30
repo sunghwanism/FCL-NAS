@@ -89,17 +89,13 @@ class FedNASAggregator(object):
             model_list.append((self.sample_num_dict[idx], self.model_dict[idx]))
         (num0, averaged_params) = model_list[0]
         
-        all_train_num = 0
-        for i in range(0, len(model_list)):
-            local_sample_num, _ = model_list[i]
-            all_train_num += local_sample_num
         
         for k in averaged_params.keys():
             for i in range(0, len(model_list)):
                 local_sample_number, local_model_params = model_list[i]
                 
                 # w = local_sample_number / self.all_train_data_num # original
-                w = local_sample_number / all_train_num # modified
+                w = local_sample_number / self.all_train_num[self.task_idx] # modified
                 
                 if i == 0:
                     averaged_params[k] = local_model_params[k] * w
@@ -120,18 +116,13 @@ class FedNASAggregator(object):
         alpha_list = []
         for idx in range(self.client_num):
             alpha_list.append((self.sample_num_dict[idx], self.arch_dict[idx]))
-            
-        all_train_num = 0
-        for i in range(0, len(alpha_list)):
-            local_sample_num, _ = alpha_list[i]
-            all_train_num += local_sample_num
 
         (num0, averaged_alphas) = alpha_list[0]
         for index, alpha in enumerate(averaged_alphas):
             for i in range(0, len(alpha_list)):
                 local_sample_number, local_alpha = alpha_list[i]
                 # w = local_sample_number / self.all_train_data_num # original
-                w = local_sample_number / all_train_num # modified
+                w = local_sample_number / self.all_train_num[self.task_idx] # modified
                 if i == 0:
                     alpha = local_alpha[index] * w
                 else:
@@ -153,9 +144,7 @@ class FedNASAggregator(object):
             wandb.log({"Train Accuracy": self.train_acc_avg, "Round": round_idx})
         # train loss
         train_loss_list = self.train_loss_dict.values()
-        print(sum(train_loss_list))
-        print(sum(train_loss_list).cpu())
-        print(len(train_loss_list))
+        
         train_loss_avg = sum(train_loss_list) / len(train_loss_list)
         logging.info(
             "Round {:3d}, Average Train Loss {:.3f}".format(round_idx, train_loss_avg)
@@ -163,6 +152,8 @@ class FedNASAggregator(object):
         if self.args.enable_wandb:
             wandb.log({"Train Loss": train_loss_avg, "Round": round_idx})
 
+        self.infer(round_idx)
+        
         # test acc
         logging.info(
             "Round {:3d}, Average Validation Accuracy {:.3f}".format(

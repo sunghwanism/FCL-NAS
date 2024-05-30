@@ -126,9 +126,9 @@ def load_partition_data_CV_MNIST(args, client_number, batch_size):
     test_path = os.path.join(args.data_cache_dir, args.dataset, "test")
     users, train_data, test_data = read_data(train_path, test_path,
                                              args.num_task, client_number=client_number)
+    train_data_num = dict()
+    test_data_num = dict()
 
-    train_data_num = 0
-    test_data_num = 0
     train_data_local_dict = dict()
     test_data_local_dict = dict()
     train_data_local_num_dict = dict()
@@ -136,8 +136,6 @@ def load_partition_data_CV_MNIST(args, client_number, batch_size):
     test_data_global = dict()
     client_idx = 0
     logging.info("loading data...")
-    train_data_num = {}
-    test_data_num = {}
     
     for user_idx, u in enumerate(users):
         user_train_data_num = {}
@@ -146,7 +144,8 @@ def load_partition_data_CV_MNIST(args, client_number, batch_size):
         for task_id in train_data[u].keys():
             user_train_data_num[task_id] = len(train_data[u][task_id]["y"])
             user_test_data_num[task_id] = len(test_data[u][task_id]["y"])
-            
+        
+        
         train_data_local_num_dict[client_idx] = user_train_data_num
 
         # transform to batches
@@ -166,6 +165,10 @@ def load_partition_data_CV_MNIST(args, client_number, batch_size):
                 test_data_global[task_id] += test_batch[task_id]
                 
         client_idx += 1
+    
+    for task_id in range(args.num_task):
+        train_data_num[task_id] = len(train_data_global[task_id])
+        test_data_num[task_id] = len(test_data_global[task_id])
 
     # train_data_global[task_id][batch_idx]
     logging.info("finished the loading data")
