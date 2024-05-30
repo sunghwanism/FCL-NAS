@@ -31,7 +31,7 @@ class FedNASTrainer(object):
         self.train_local = train_data_local_dict[client_index] # To-Be Changed
         self.local_sample_number = train_data_local_num # To-Be Changed
         self.test_local = test_data_local_dict[client_index] # To-Be Changed
-        self.task_idx = 0
+        self.task_idx = None
 
     def update_model(self, weights):
         logging.info("update_model. client_index = %d" % self.client_index)
