@@ -165,11 +165,11 @@ def load_partition_data_CV_MNIST(args, client_number, batch_size):
         
         for task_id in range(args.num_task):
             if user_idx == 0:
-                train_data_global[task_id] = train_batch[task_id]
-                test_data_global[task_id] = test_batch[task_id]
+                train_data_global[task_id] = train_batch
+                test_data_global[task_id] = test_batch
             else:
-                train_data_global[task_id] += train_batch[task_id]
-                test_data_global[task_id] += test_batch[task_id]
+                train_data_global[task_id] += train_batch
+                test_data_global[task_id] += test_batch
         
         client_idx += 1
     # train_data_global[task_id][batch_idx]
