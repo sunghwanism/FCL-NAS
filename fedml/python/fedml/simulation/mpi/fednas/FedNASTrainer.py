@@ -28,9 +28,9 @@ class FedNASTrainer(object):
         self.criterion = nn.CrossEntropyLoss().to(self.device)
         self.model = model
         self.model.to(self.device)
-        self.train_local = train_data_local_dict[client_index] # To-Be Changed
-        self.local_sample_number = train_data_local_num # To-Be Changed
-        self.test_local = test_data_local_dict[client_index] # To-Be Changed
+        self.train_local = train_data_local_dict[client_index]
+        self.local_sample_number = train_data_local_num[client_index]
+        self.test_local = test_data_local_dict[client_index]
         self.task_idx = None
 
     def update_model(self, weights):
@@ -101,7 +101,7 @@ class FedNASTrainer(object):
         return (
             weights,
             alphas,
-            self.local_sample_number,
+            self.local_sample_number[self.task_idx],
             sum(local_avg_train_acc) / len(local_avg_train_acc),
             sum(local_avg_train_loss) / len(local_avg_train_loss),
         )
