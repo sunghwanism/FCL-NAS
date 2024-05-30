@@ -29,6 +29,8 @@ class FedNASServerManager(FedMLCommManager):
             self.__send_initial_config_to_client(
                 process_id, global_model_params, global_arch_params
             )
+        
+        
         super().run()
 
     def register_message_receive_handlers(self):
@@ -57,7 +59,6 @@ class FedNASServerManager(FedMLCommManager):
         local_sample_number = msg_params.get(MyMessage.MSG_ARG_KEY_NUM_SAMPLES)
         train_acc = msg_params.get(MyMessage.MSG_ARG_KEY_LOCAL_TRAINING_ACC)
         train_loss = msg_params.get(MyMessage.MSG_ARG_KEY_LOCAL_TRAINING_LOSS)
-
         self.aggregator.add_local_trained_result(
             process_id - 1,
             model_params,

@@ -32,6 +32,7 @@ class FedNASAggregator(object):
         self.train_acc_avg = 0.0
         self.test_acc_avg = 0.0
         self.test_loss_avg = 0.0
+        self.task_idx = None
 
         self.flag_client_model_uploaded_dict = dict()
         for idx in range(self.client_num):
@@ -83,13 +84,23 @@ class FedNASAggregator(object):
         logging.info("################aggregate weights############")
         start_time = time.time()
         model_list = []
+        
         for idx in range(self.client_num):
             model_list.append((self.sample_num_dict[idx], self.model_dict[idx]))
         (num0, averaged_params) = model_list[0]
+        
+        all_train_num = 0
+        for i in range(0, len(model_list)):
+            local_sample_num, _ = model_list[i]
+            all_train_num += local_sample_num
+        
         for k in averaged_params.keys():
             for i in range(0, len(model_list)):
                 local_sample_number, local_model_params = model_list[i]
-                w = local_sample_number / self.all_train_data_num
+                
+                # w = local_sample_number / self.all_train_data_num # original
+                w = local_sample_number / all_train_num # modified
+                
                 if i == 0:
                     averaged_params[k] = local_model_params[k] * w
                 else:
@@ -109,12 +120,18 @@ class FedNASAggregator(object):
         alpha_list = []
         for idx in range(self.client_num):
             alpha_list.append((self.sample_num_dict[idx], self.arch_dict[idx]))
+            
+        all_train_num = 0
+        for i in range(0, len(alpha_list)):
+            local_sample_num, _ = alpha_list[i]
+            all_train_num += local_sample_num
 
         (num0, averaged_alphas) = alpha_list[0]
         for index, alpha in enumerate(averaged_alphas):
             for i in range(0, len(alpha_list)):
                 local_sample_number, local_alpha = alpha_list[i]
-                w = local_sample_number / self.all_train_data_num
+                # w = local_sample_number / self.all_train_data_num # original
+                w = local_sample_number / all_train_num # modified
                 if i == 0:
                     alpha = local_alpha[index] * w
                 else:

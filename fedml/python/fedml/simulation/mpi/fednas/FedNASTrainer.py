@@ -29,7 +29,7 @@ class FedNASTrainer(object):
         self.model = model
         self.model.to(self.device)
         self.train_local = train_data_local_dict[client_index]
-        self.local_sample_number = train_data_local_num[client_index]
+        self.local_sample_number = train_data_local_num
         self.test_local = test_data_local_dict[client_index]
         self.task_idx = None
 
