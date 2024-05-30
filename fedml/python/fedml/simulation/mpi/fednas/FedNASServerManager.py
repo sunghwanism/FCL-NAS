@@ -18,6 +18,7 @@ class FedNASServerManager(FedMLCommManager):
 
         # Task Index for each client
         self.task_idx_per_client = np.zeros(args.client_num_in_total)
+        self.task_idx = 0 #temporal variable for task index
 
     def run(self):
         global_model = self.aggregator.get_model()
@@ -69,6 +70,8 @@ class FedNASServerManager(FedMLCommManager):
         )
         b_all_received = self.aggregator.check_whether_all_receive()
         logging.info("b_all_received = " + str(b_all_received))
+        self.aggregator.task_idx = self.task_idx
+        
         if b_all_received:
             if self.args.stage == "search":
                 global_model_params, global_arch_params = self.aggregator.aggregate()
@@ -90,15 +93,21 @@ class FedNASServerManager(FedMLCommManager):
                 return
             
             #######################################################################################
+            # Taks change with the round
+            
+            if self.args.round_idx % self.args.task_change_round == 0:
+                self.task_idx += 1
+            
+            #######################################################################################
             # Task Change for each client randomly
             
-            for client_idx in range(self.args.client_num_in_total):
-                if self.task_idx_per_client[client_idx] == self.args.num_task - 1:
-                    continue
-                prob = np.random.rand()
+            # for client_idx in range(self.args.client_num_in_total):
+            #     if self.task_idx_per_client[client_idx] == self.args.num_task - 1:
+            #         continue
+            #     prob = np.random.rand()
                 
-                if prob > self.args.next_task_prob: # Taks Change
-                    self.task_idx_per_client[client_idx] += 1
+            #     if prob > self.args.next_task_prob: # Taks Change
+            #         self.task_idx_per_client[client_idx] += 1
                     
             #######################################################################################
 
@@ -113,7 +122,8 @@ class FedNASServerManager(FedMLCommManager):
         message = Message(MyMessage.MSG_TYPE_S2C_SYNC_MODEL_TO_CLIENT, 0, process_id)
         message.add_params(MyMessage.MSG_ARG_KEY_MODEL_PARAMS, global_model_params)
         message.add_params(MyMessage.MSG_ARG_KEY_ARCH_PARAMS, global_arch_params)
-        message.add_params(MyMessage.MSG_TASK_KEY, self.task_idx_per_client[process_id]) # For selecting task
+        # message.add_params(MyMessage.MSG_TASK_KEY, self.task_idx_per_client[process_id]) # For selecting task
+        message.add_params(MyMessage.MSG_TASK_KEY, self.task_idx)
         logging.info(
             "__send_model_to_client_message. MSG_TYPE_S2C_SYNC_MODEL_TO_CLIENT. receiver: "
             + str(process_id)

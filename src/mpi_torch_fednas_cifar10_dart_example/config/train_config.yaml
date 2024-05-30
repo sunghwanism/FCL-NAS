@@ -9,6 +9,7 @@ data_args:
   partition_alpha: 0.5
   num_task: 5 # ~10
   next_task_prob: 0 # if 0, the task is changed in all round ~> FedNASServerManager.py
+  task_change_round: 1
 
 model_args:
   model: "darts"

@@ -32,7 +32,7 @@ class FedNASAggregator(object):
         self.train_acc_avg = 0.0
         self.test_acc_avg = 0.0
         self.test_loss_avg = 0.0
-        self.task_idx = None
+        self.task_idx = 0
 
         self.flag_client_model_uploaded_dict = dict()
         for idx in range(self.client_num):
