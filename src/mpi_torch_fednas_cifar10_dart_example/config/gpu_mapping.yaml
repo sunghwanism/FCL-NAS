@@ -8,7 +8,7 @@
 
 # this is used for 10 clients and 1 server training within a single machine which has 4 GPUs
 mapping_default:
-    Baro-GPU-RTX4090x4: [1, 1, 1, 1] 
+    Baro-GPU-RTX4090x4: [3, 3, 3, 2] 
 
 mapping_Baro3090:
     Baro-GPU-RTX3090x4: [3, 3, 3, 2]

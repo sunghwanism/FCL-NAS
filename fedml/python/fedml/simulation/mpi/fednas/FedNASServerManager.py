@@ -20,7 +20,7 @@ class FedNASServerManager(FedMLCommManager):
         self.task_idx_per_client = np.zeros(args.client_num_in_total)
         self.task_idx = 0 #temporal variable for task index
         
-        self.change_task_idx = self.args.task_change_round // self.args.comm_round
+        self.change_task_idx = self.args.comm_round // self.args.task_change_round
 
     def run(self):
         global_model = self.aggregator.get_model()

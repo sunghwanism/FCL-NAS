@@ -9,7 +9,7 @@ data_args:
   partition_alpha: 0.5
   num_task: 5 # ~10
   next_task_prob: 0 # if 0, the task is changed in all round ~> FedNASServerManager.py
-  task_change_round: 1
+  task_change_round: 10
 
 model_args:
   model: "darts"
@@ -19,8 +19,8 @@ train_args:
   client_id_list: "[]"
   client_num_in_total: 10
   client_num_per_round: 5
-  comm_round: 50
-  epochs: 1
+  comm_round: 100
+  epochs: 10
   batch_size: 32
   client_optimizer: sgd
   learning_rate: 0.03
@@ -55,7 +55,7 @@ validation_args:
   frequency_of_the_test: 5
 
 device_args:
-  worker_num: 1
+  worker_num: 10
   gpu_id: 3 # if you use MPI backend, this parameter is ignored
   using_gpu: true
   gpu_mapping_file: config/gpu_mapping.yaml
@@ -69,7 +69,7 @@ comm_args:
 
 tracking_args:
    # When running on MLOps platform(open.fedml.ai), the default log path is at ~/.fedml/fedml-client/fedml/logs/ and ~/.fedml/fedml-server/fedml/logs/
-  enable_wandb: false
+  enable_wandb: true
   wandb_key: dac4b4e3de3694519c6dada0c32728d5fdd44d94 # msh2044 key
   wandb_project: FCL-NAS
   wandb_name: FedNAS
