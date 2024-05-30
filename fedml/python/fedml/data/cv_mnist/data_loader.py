@@ -70,6 +70,7 @@ def read_data(train_data_dir, test_data_dir, num_task, client_number):
     
         with open(test_file_path, "r") as inf:
             cdata = json.load(inf)
+            
         temp_data = {}
         
         for task_id in range(num_task):
@@ -118,7 +119,6 @@ def batch_data(args, data, batch_size):
         batched_x, batched_y = ml_engine_adapter.convert_numpy_to_ml_engine_data_format(args, batched_x, batched_y)
         batch_data.append((batched_x, batched_y))
 
-        
     return batch_data
 
 
@@ -145,14 +145,8 @@ def load_partition_data_CV_MNIST(args, client_number, batch_size):
         user_test_data_num = {}
         
         for task_id in train_data[u].keys():
-            user_train_data_num[task_id] = len(train_data[u][task_id]["x"])
-            user_test_data_num[task_id] = len(test_data[u][task_id]["x"])
-            if user_idx == 0:
-                train_data_num[task_id] = 0
-                test_data_num[task_id] = 0
-            else:
-                train_data_num[task_id] += user_train_data_num[task_id]
-                test_data_num[task_id] += user_test_data_num[task_id]
+            user_train_data_num[task_id] = len(train_data[u][task_id]["y"])
+            user_test_data_num[task_id] = len(test_data[u][task_id]["y"])
             
         train_data_local_num_dict[client_idx] = user_train_data_num
 
@@ -163,7 +157,6 @@ def load_partition_data_CV_MNIST(args, client_number, batch_size):
         # index using client index
         train_data_local_dict[client_idx] = train_batch
         test_data_local_dict[client_idx] = test_batch
-
         
         for task_id in range(args.num_task):
             if user_idx == 0:
@@ -172,7 +165,7 @@ def load_partition_data_CV_MNIST(args, client_number, batch_size):
             else:
                 train_data_global[task_id] += train_batch[task_id]
                 test_data_global[task_id] += test_batch[task_id]
-        print(train_data_global[0][0][0].shape)
+                
         client_idx += 1
 
     # train_data_global[task_id][batch_idx]

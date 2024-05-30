@@ -567,10 +567,6 @@ def load_synthetic_data(args):
         )
         
         
-        
-        
-        
-        
 
     if centralized:
         train_data_local_num_dict = {

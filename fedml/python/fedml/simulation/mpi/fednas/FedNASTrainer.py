@@ -22,7 +22,6 @@ class FedNASTrainer(object):
 
         self.client_index = client_index
         self.all_train_data_num = train_data_num
-
         self.device = device
         self.args = args
         self.criterion = nn.CrossEntropyLoss().to(self.device)
@@ -218,11 +217,12 @@ class FedNASTrainer(object):
         top1 = utils.AvgrageMeter()
         top5 = utils.AvgrageMeter()
 
+        
         for step, (input, target) in enumerate(train_queue):
             # logging.info("epoch %d, step %d START" % (epoch, step))
             model.train()
             n = input.size(0)
-
+            
             input = input.to(self.device)
             target = target.to(self.device)
 
@@ -246,6 +246,7 @@ class FedNASTrainer(object):
             # torch.cuda.empty_cache()
             if step % self.args.report_freq == 0:
                 logging.info("train %03d %e %f %f", step, objs.avg, top1.avg, top5.avg)
+                # self.infer()
 
         return top1.avg, objs.avg, loss
 
@@ -288,13 +289,15 @@ class FedNASTrainer(object):
         test_correct = 0.0
         test_loss = 0.0
         test_sample_number = 0.0
-        test_data = self.train_local[self.task_idx]
+        # test_data = self.train_local[self.task_idx]
+        test_data = self.test_local[self.task_idx]
         with torch.no_grad():
             for batch_idx, (x, target) in enumerate(test_data):
                 x = x.to(self.device)
                 target = target.to(self.device)
 
-                pred = self.model(x)
+                # pred = self.model(x)
+                pred, logits_aux = self.model(x)
                 loss = self.criterion(pred, target)  # pylint: disable=E1102
                 _, predicted = torch.max(pred, 1)
                 correct = predicted.eq(target).sum()
@@ -307,3 +310,4 @@ class FedNASTrainer(object):
                 % (self.client_index, test_loss)
             )
         return test_correct / test_sample_number, test_loss
+    
