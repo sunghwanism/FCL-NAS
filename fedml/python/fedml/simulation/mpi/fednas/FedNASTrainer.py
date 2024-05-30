@@ -207,7 +207,7 @@ class FedNASTrainer(object):
 
         return (
             weights,
-            self.local_sample_number,
+            self.local_sample_number[self.task_idx],
             sum(local_avg_train_acc) / len(local_avg_train_acc),
             sum(local_avg_train_loss) / len(local_avg_train_loss),
         )

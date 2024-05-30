@@ -34,7 +34,7 @@ class FedNASClientManager(FedMLCommManager):
         
         # For knowing the current task index
         task_idx = msg_params.get(MyMessage.MSG_TASK_KEY)
-        logging.info(f"---------- Current Task Index [{task_idx}]] ----------")
+        
         self.trainer.task_idx = task_idx
         self.trainer.update_model(global_model_params)
         if self.args.stage == "search":
@@ -65,7 +65,7 @@ class FedNASClientManager(FedMLCommManager):
             self.finish()
 
     def __train(self):
-        logging.info("#######training########### round_id = %d" % self.args.round_idx)
+        logging.info(f"#######training########### round_id = {self.args.round_idx} Task {self.trainer.task_idx}" )
         start_time = time.time()
         if self.args.stage == "search":
             (

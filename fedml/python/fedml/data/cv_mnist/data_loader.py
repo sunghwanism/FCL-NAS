@@ -70,7 +70,6 @@ def read_data(train_data_dir, test_data_dir, num_task, client_number):
     
         with open(test_file_path, "r") as inf:
             cdata = json.load(inf)
-            
         temp_data = {}
         
         for task_id in range(num_task):
