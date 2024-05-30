@@ -97,7 +97,7 @@ class FedNASServerManager(FedMLCommManager):
             #######################################################################################
             # Taks change with the round
             
-            if self.change_task_idx % self.args.round_idx == 0:
+            if self.args.round_idx % self.change_task_idx == 0:
                 logging.info("-------------- Change Task --------------")
                 self.task_idx += 1
             
