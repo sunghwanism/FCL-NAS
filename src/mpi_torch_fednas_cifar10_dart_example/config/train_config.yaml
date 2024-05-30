@@ -9,7 +9,6 @@ data_args:
   partition_alpha: 0.5
   num_task: 5 # ~10
   next_task_prob: 0 # if 0, the task is changed in all round ~> FedNASServerManager.py
-  task_change_round: 10
 
 model_args:
   model: "darts"
@@ -18,10 +17,10 @@ train_args:
   federated_optimizer: "FedNAS"
   client_id_list: "[]"
   client_num_in_total: 10
-  client_num_per_round: 5
+  client_num_per_round: 10
   comm_round: 100
   epochs: 10
-  batch_size: 32
+  batch_size: 64
   client_optimizer: sgd
   learning_rate: 0.03
   weight_decay: 0.001
@@ -48,7 +47,7 @@ search_args:
   grad_clip: 5
   tau_max: 10
   tau_min: 1
-  report_freq: 1
+  report_freq: 10
 
 
 validation_args:
