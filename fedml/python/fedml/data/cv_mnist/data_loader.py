@@ -145,7 +145,6 @@ def load_partition_data_CV_MNIST(args, client_number, batch_size):
             user_train_data_num[task_id] = len(train_data[u][task_id]["y"])
             user_test_data_num[task_id] = len(test_data[u][task_id]["y"])
         
-        
         train_data_local_num_dict[client_idx] = user_train_data_num
 
         # transform to batches
